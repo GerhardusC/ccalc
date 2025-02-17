@@ -1,22 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
+// DECLARATIONS
 int check_valid_character(char symbol);
 int parse_int(char *string);
 
+struct Token* create_head(char val[], enum TokenKind kind);
+struct Token* create_node(char *val, enum TokenKind kind);
+struct Token* parse_input(char *input);
+
+void print_list(struct Token *head);
+
+// ENUMS
 enum TokenKind {
     NUM,
     SYMBOL,
     INVALID,
 };
 
+// STRUCT DEFS
 struct Token {
     struct Token *head;
     struct Token *next;
     char val[32];
     enum TokenKind kind;
+};
+
+
+
+int main () {
+    // parse_input("!100+2000*3(1+2)-32");
+    int num = parse_int("1234651");
+    printf("%d", num);
+}
+
+// FUNCTION DEFINITIONS
+
+int check_valid_character(char symbol){
+    switch (symbol){
+        case '(':
+        case ')':
+        case '*':
+        case '/':
+        case '-':
+        case '+':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int parse_int(char *string){
+    int amount = 0;
+    int i = 0;
+    while(string[i] != '\0'){
+        amount += ((int) string[i] - (int) '1') * pow(10, i + 1);
+        i++;
+    }
+    return amount;
 };
 
 struct Token* create_head(char val[], enum TokenKind kind){
@@ -34,21 +76,6 @@ struct Token* create_node(char *val, enum TokenKind kind){
     new_node->kind = kind;
     new_node->next = NULL;
     return new_node;
-}
-
-void insert_after(struct Token* target_node, struct Token* node_to_insert){
-    node_to_insert->head = target_node->head;
-    node_to_insert->next = target_node->next;
-    target_node->next = node_to_insert;
-}
-
-void print_list(struct Token *head){
-    struct Token *current_item = head;
-
-    while(current_item != NULL){
-        printf("%s\n", current_item->val);
-        current_item = current_item->next;
-    }
 }
 
 struct Token* parse_input(char *input){
@@ -97,7 +124,6 @@ struct Token* parse_input(char *input){
         c_i = 0;
 
         // create new node for number
-
         if(num_contents[0] != '\0'){
             struct Token *new_tok_for_num = create_node(num_contents, NUM);
             insert_after(last_token, new_tok_for_num);
@@ -105,60 +131,22 @@ struct Token* parse_input(char *input){
         }
 
         // create new node for token
-
         struct Token *new_tok_for_sym = create_node(&curr, SYMBOL);
         insert_after(last_token, new_tok_for_sym);
         last_token = new_tok_for_sym;
     }
 }
 
-int check_valid_character(char symbol){
-    switch (symbol){
-        case '(':
-        case ')':
-        case '*':
-        case '/':
-        case '-':
-        case '+':
-            return 1;
-        default:
-            return 0;
-    }
+void insert_after(struct Token* target_node, struct Token* node_to_insert){
+    node_to_insert->head = target_node->head;
+    node_to_insert->next = target_node->next;
+    target_node->next = node_to_insert;
 }
 
-int parse_int(char *string){
-    int amount = 0;
-    int i = 0;
-    while(string[i] != '\0'){
-        amount += ((int) string[i] - (int) '1') * pow(10, i + 1);
-        i++;
+void print_list(struct Token *head){
+    struct Token *current_item = head;
+    while(current_item != NULL){
+        printf("%s\n", current_item->val);
+        current_item = current_item->next;
     }
-    return amount;
-};
-
-struct Token* respond_to_symbol(char symbol){
-    struct Token *new_token = malloc(sizeof(struct Token));
-    new_token->kind = SYMBOL;
-    new_token->val[0] = symbol;
-    switch (symbol){
-        case '(':
-        case ')':
-        case '*':
-        case '/':
-        case '-':
-        case '+':
-            return new_token;
-        default:
-            new_token->kind = INVALID;
-            return new_token;
-    }
-}
-
-int main () {
-    // parse_input("!100+2000*3(1+2)-32");
-
-    int num = parse_int("1234651");
-    printf("%d", num);
-
-
 }
