@@ -1,16 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// DECLARATIONS
-int check_valid_character(char symbol);
-int parse_int(char *string);
-
-struct Token* create_head(char val[], enum TokenKind kind);
-struct Token* create_node(char *val, enum TokenKind kind);
-struct Token* parse_input(char *input);
-
-void print_list(struct Token *head);
+#include <math.h>
 
 // ENUMS
 enum TokenKind {
@@ -28,10 +19,23 @@ struct Token {
 };
 
 
+// DECLARATIONS
+int check_valid_character(char symbol);
+int parse_int(char *string);
 
+struct Token* create_head(char val[], enum TokenKind kind);
+struct Token* create_node(char *val, enum TokenKind kind);
+struct Token* parse_input(char *input);
+
+void insert_after(struct Token* target_node, struct Token* node_to_insert);
+void print_list(struct Token *head);
+
+
+// -------------------- MAIN ----------------------
 int main () {
     // parse_input("!100+2000*3(1+2)-32");
     int num = parse_int("1234651");
+    // printf("0: %d, 1: %d", (int) '0', (int) '1');
     printf("%d", num);
 }
 
@@ -53,10 +57,17 @@ int check_valid_character(char symbol){
 
 int parse_int(char *string){
     int amount = 0;
-    int i = 0;
-    while(string[i] != '\0'){
-        amount += ((int) string[i] - (int) '1') * pow(10, i + 1);
-        i++;
+    int length = 0;
+    // Count length.
+    while(string[length] != '\0'){
+        length++;
+    }
+    // Calculate from other end.
+    for(int j = length; j > 0; j--){
+        char current = string[j - 1];
+        int normalised_val = ((int) current - ((int) '0'));
+
+        amount += normalised_val * powf(10., (length - j));
     }
     return amount;
 };
