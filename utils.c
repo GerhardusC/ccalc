@@ -1,6 +1,5 @@
 #include "utils.h"
 
-
 int pow_to_uint(int base, int exponent){
     if(exponent == 0){
         return 1;
