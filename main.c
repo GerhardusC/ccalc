@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 // ENUMS
+// TOKENISING
 enum TokenKind {
     NUM,
     SYMBOL,
     INVALID,
 };
 
+// PARSING
+
+
 // STRUCT DEFS
+// TOKENISING
 struct Token {
     struct Token *head;
     struct Token *next;
@@ -18,29 +22,49 @@ struct Token {
     enum TokenKind kind;
 };
 
+// PARSING
+struct TreeNode {
+    struct TreeNode *root;
+    struct TreeNode *children;
+    int depth;
+    // TODO!
+
+};
+
 
 // DECLARATIONS
+// TOKENISING
 int check_valid_character(char symbol);
 int parse_int(char *string);
+int pow_to_uint(int base, int exponent);
+int mul_self(int base, int exp,  int acc);
 
 struct Token* create_head(char val[], enum TokenKind kind);
-struct Token* create_node(char *val, enum TokenKind kind);
-struct Token* parse_input(char *input);
+struct Token* create_node(char val[], enum TokenKind kind);
+struct Token* tokenise_input(char *input);
 
 void insert_after(struct Token* target_node, struct Token* node_to_insert);
 void print_list(struct Token *head);
 
-
 // -------------------- MAIN ----------------------
 int main () {
-    // parse_input("!100+2000*3(1+2)-32");
-    int num = parse_int("1234651");
-    // printf("0: %d, 1: %d", (int) '0', (int) '1');
-    printf("%d", num);
-}
+    // struct Token *tokens = tokenise_input("!100+2000*3(1+2)-32");
+    // print_list(tokens);
+    // int num = parse_int("1234651");
+    // printf("%d", num);
+    // int num1;
+    // printf("Enter num 1: \n");
+    // scanf("%d", &num1);
+    // int num2;
+    // printf("Enter num 2: \n");
+    // scanf("%d", &num2);
+    // printf("%d\n", int_pow_to_uint(num1, num2));
+    printf("%d\n", pow_to_uint(5, 4));
+};
 
 // FUNCTION DEFINITIONS
 
+// TOKENISING...
 int check_valid_character(char symbol){
     switch (symbol){
         case '(':
@@ -67,10 +91,29 @@ int parse_int(char *string){
         char current = string[j - 1];
         int normalised_val = ((int) current - ((int) '0'));
 
-        amount += normalised_val * powf(10., (length - j));
+        amount += normalised_val * pow_to_uint(10, (length - j));
     }
     return amount;
 };
+
+int pow_to_uint(int base, int exponent){
+    if(exponent == 0){
+        return 1;
+    }
+    if(exponent < 0){
+        return 0;
+    }
+    return mul_self(base, exponent, 1);
+
+};
+
+int mul_self(int base, int exp,  int acc){
+    if(exp <= 0){
+        return acc;
+    }
+    return mul_self(base, exp - 1, acc * base);
+}
+
 
 struct Token* create_head(char val[], enum TokenKind kind){
     struct Token *new_node = malloc(sizeof(struct Token));
@@ -81,7 +124,7 @@ struct Token* create_head(char val[], enum TokenKind kind){
     return new_node;
 }
 
-struct Token* create_node(char *val, enum TokenKind kind){
+struct Token* create_node(char val[], enum TokenKind kind){
     struct Token *new_node = malloc(sizeof(struct Token));
     strcpy(new_node->val, val);
     new_node->kind = kind;
@@ -89,7 +132,7 @@ struct Token* create_node(char *val, enum TokenKind kind){
     return new_node;
 }
 
-struct Token* parse_input(char *input){
+struct Token* tokenise_input(char *input){
     struct Token *head = create_head("head", INVALID);
     struct Token *last_token = head;
 
@@ -161,3 +204,5 @@ void print_list(struct Token *head){
         current_item = current_item->next;
     }
 }
+
+// PARSING...
