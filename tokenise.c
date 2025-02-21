@@ -3,10 +3,8 @@
 #include <stdio.h>
 #include "utils.h"
 #include "tokenise.h"
-// FUNCTION DECLARATIONS
-// ENUMS
 
-// TOKENISING...
+
 int check_valid_character(char symbol){
     switch (symbol){
         case '(':
@@ -124,10 +122,25 @@ void insert_token_after(struct Token* target_node, struct Token* node_to_insert)
     target_node->next = node_to_insert;
 }
 
-void print_list(struct Token *head){
+void print_token_list(struct Token *head){
     struct Token *current_item = head;
+    printf("________________________________________________________________________________________\n");
+    printf("|______KIND_____|_________VALUE_________|_________SELF__________|_________NEXT__________|\n");
     while(current_item != NULL){
-        printf("%s\n", current_item->val);
+        char current_item_kind_str[8];
+        switch(current_item->kind){
+            case NUM:
+                strcpy(current_item_kind_str, "NUMBER");
+                break;
+            case SYMBOL:
+                strcpy(current_item_kind_str, "SYMBOL");
+                break;
+            case INVALID:
+                strcpy(current_item_kind_str, "INVALID");
+                break;
+        }
+        printf("| Kind: %s\t| Val -> %s\t\t| Self: %p\t| Next: %p\t|\n", current_item_kind_str, current_item->val, current_item, current_item->next);
         current_item = current_item->next;
     }
+    printf("|_______________________________________________________________________________________|\n\n");
 }
