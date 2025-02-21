@@ -139,7 +139,6 @@ void print_token_list(struct Token *head){
                 strcpy(current_item_kind_str, "INVALID");
                 break;
         }
-        char next_item_display[16];
         if(current_item->next != NULL){
             printf("| Kind: %s\t| Val -> %s\t\t| Self: %p\t| Next: %p\t|\n", current_item_kind_str, current_item->val, current_item, current_item->next);
         } else {
