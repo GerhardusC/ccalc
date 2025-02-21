@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc ./main.c ./utils.c -o main && echo "All is well.";
+gcc ./main.c ./utils.c ./tokenise.c -o main && echo "All is well.";
