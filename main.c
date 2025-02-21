@@ -123,6 +123,20 @@ enum RespondToNumOutcome respond_to_number(char curr, char next, char *current_t
     return NOT_A_NUMBER;
 }
 
+
+void insert_staged_tokens(char *num_contents, struct Token **last_token, char curr){
+    if(num_contents[0] != '\0'){
+        struct Token *new_tok_for_num = create_node(num_contents, NUM);
+        insert_after(*last_token, new_tok_for_num);
+        *last_token = new_tok_for_num;
+    }
+
+    // create new node for token
+    struct Token *new_tok_for_sym = create_node(&curr, SYMBOL);
+    insert_after(*last_token, new_tok_for_sym);
+    *last_token = new_tok_for_sym;
+}
+
 struct Token* tokenise_input(char *input){
     struct Token *head = create_head("head", INVALID);
     struct Token *last_token = head;
@@ -160,17 +174,7 @@ struct Token* tokenise_input(char *input){
         c_l = 0;
         c_i = 0;
 
-        // create new node for number
-        if(num_contents[0] != '\0'){
-            struct Token *new_tok_for_num = create_node(num_contents, NUM);
-            insert_after(last_token, new_tok_for_num);
-            last_token = new_tok_for_num;
-        }
-
-        // create new node for token
-        struct Token *new_tok_for_sym = create_node(&curr, SYMBOL);
-        insert_after(last_token, new_tok_for_sym);
-        last_token = new_tok_for_sym;
+        insert_staged_tokens(num_contents, &last_token, curr);
     }
 }
 
